@@ -11,13 +11,9 @@ class MainTableViewController: UIViewController{
     
     
     @IBOutlet weak var topBar: UIView!
-    //mainCell
     @IBOutlet weak var mainTableView: UITableView!
-    
-    
     @IBOutlet weak var createTaskButton: UIButton!
     
-    @IBOutlet weak var mainView: UIView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,6 +24,7 @@ class MainTableViewController: UIViewController{
         mainTableView.delegate = self
         
         createTaskButton.layer.masksToBounds = true
+        createTaskButton.layer.cornerRadius = createTaskButton.frame.size.height/2
        
     }
     
@@ -40,12 +37,16 @@ class MainTableViewController: UIViewController{
 
 extension MainTableViewController: UITableViewDataSource, UITableViewDelegate{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 100
+        return 50
     }
 
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "mainCell", for: indexPath) as! TableViewCell
+        cell.taskNumber.text = "Задача №\(indexPath.row + 1)"
+        cell.mainLabel.text = "Сделай задачу №\(indexPath.row + 1)"
+        cell.dateLabel.text = "Сегодня"
+        
         return cell
     }
     
