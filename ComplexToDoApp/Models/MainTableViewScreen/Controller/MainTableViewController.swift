@@ -14,6 +14,8 @@ class MainTableViewController: UIViewController{
     @IBOutlet weak var mainTableView: UITableView!
     @IBOutlet weak var createTaskButton: UIButton!
     
+    var tasks: [TaskModel] = []
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,8 +31,16 @@ class MainTableViewController: UIViewController{
     }
     
     @IBAction func createButtonTapped(_ sender: UIButton) {
-        
+        let vc = storyboard?.instantiateViewController(withIdentifier: "CreateTaskViewController") as! CreateTaskViewController
+        vc.delegate = self
     }
+    
+}
+extension MainTableViewController : CreateTaskDelegate{
+    func taskCreated(task: TaskModel) {
+        tasks.append(task)
+    }
+    
     
 }
 
