@@ -24,6 +24,7 @@ class MainTableViewController: UIViewController{
         
         mainTableView.dataSource = self
         mainTableView.delegate = self
+        mainTableView.separatorStyle = .none
         
         createTaskButton.layer.masksToBounds = true
         createTaskButton.layer.cornerRadius = createTaskButton.frame.size.height/2
@@ -31,33 +32,57 @@ class MainTableViewController: UIViewController{
     }
     
     @IBAction func createButtonTapped(_ sender: UIButton) {
-        let vc = storyboard?.instantiateViewController(withIdentifier: "CreateTaskViewController") as! CreateTaskViewController
+        let vc = storyboard?.instantiateViewController(withIdentifier: StoryboardIDs.createVC) as! CreateTaskViewController
+        navigationController?.pushViewController(vc, animated: true)
         vc.delegate = self
     }
     
 }
+
 extension MainTableViewController : CreateTaskDelegate{
     func taskCreated(task: TaskModel) {
-        tasks.append(task)
+        var oldTask = false
+        for i in 0 ..< tasks.count{
+            if task.id == tasks[i].id{
+                tasks[i] = task
+                oldTask = true
+            }
+        }
+        if !oldTask{
+            tasks.append(task)
+        }
+        
+        mainTableView.reloadData()
     }
-    
-    
 }
 
 
 extension MainTableViewController: UITableViewDataSource, UITableViewDelegate{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 50
+        return tasks.count
     }
 
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "mainCell", for: indexPath) as! TableViewCell
-        cell.taskNumber.text = "Задача №\(indexPath.row + 1)"
-        cell.mainLabel.text = "Сделай задачу №\(indexPath.row + 1)"
-        cell.dateLabel.text = "Сегодня"
+        
+        let task = tasks [indexPath.row]
+        
+        cell.taskNumber.text = "Задача №\(task.id)"
+        cell.mainLabel.text = "\(task.title)"
+        cell.dateLabel.text = "\(task.date)"
         
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        
+        let task = tasks[indexPath.row]
+        let vc = storyboard?.instantiateViewController(withIdentifier: StoryboardIDs.createVC) as! CreateTaskViewController
+        navigationController?.pushViewController(vc, animated: true)
+        vc.delegate = self
+        vc.currentTask = task
     }
     
 }
